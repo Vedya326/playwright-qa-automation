@@ -12,15 +12,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup Node
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
-    - name: Install dependencies
+    - name: Initialize npm project
       run: |
-        npm install
-        npx playwright install --with-deps
+        npm init -y
+        npm install playwright
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
 
     - name: Run Playwright Script
       run: node sumTables.js
