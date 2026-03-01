@@ -8,17 +8,20 @@ const { chromium } = require('playwright');
 
   for (let seed = 71; seed <= 80; seed++) {
     const url = `https://sanand0.github.io/tdsdata/table_seed_${seed}.html`;
+
     await page.goto(url);
+    await page.waitForLoadState('networkidle');
 
     const numbers = await page.$$eval('table td', cells =>
-      cells.map(td => parseFloat(td.innerText)).filter(n => !isNaN(n))
+      cells
+        .map(td => parseFloat(td.innerText.trim()))
+        .filter(n => !isNaN(n))
     );
 
-    const pageSum = numbers.reduce((a, b) => a + b, 0);
-    totalSum += pageSum;
+    totalSum += numbers.reduce((a, b) => a + b, 0);
   }
 
-  console.log("FINAL TOTAL SUM:", totalSum);
+  console.log(totalSum);
 
   await browser.close();
 })();
