@@ -1,7 +1,7 @@
 const { chromium } = require('playwright');
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
   let totalSum = 0;
@@ -9,10 +9,9 @@ const { chromium } = require('playwright');
   for (let seed = 71; seed <= 80; seed++) {
     const url = `https://sanand0.github.io/tdsdata/table_seed_${seed}.html`;
 
-    await page.goto(url);
-    await page.waitForLoadState('networkidle');
+    await page.goto(url, { waitUntil: "networkidle" });
 
-    const numbers = await page.$$eval('table td', cells =>
+    const numbers = await page.$$eval("table td", cells =>
       cells
         .map(td => parseFloat(td.innerText.trim()))
         .filter(n => !isNaN(n))
@@ -21,7 +20,8 @@ const { chromium } = require('playwright');
     totalSum += numbers.reduce((a, b) => a + b, 0);
   }
 
-  console.log(totalSum);
-
   await browser.close();
+
+  // 🔥 IMPORTANT — ONLY THIS LINE SHOULD PRINT
+  console.log(totalSum);
 })();
